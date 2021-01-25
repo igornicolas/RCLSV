@@ -3,14 +3,17 @@ import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import DefaultInput from '../../components/DefaultInput';
 import DefaultButton from '../../components/DefaultButton';
 import RadioButton from 'react-native-paper/lib/commonjs/components/RadioButton/RadioButton';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import AdressInput from '../../components/AdressInput';
+
 const theme = {
-  dark: true,
   colors: {
     primary: '#7DB572',
-    accent: '#fff',
-    background: '#000',
-    text: '#fff',
-    placeholder: '#6E6E6E',
+    accent: '#7DB572',
+    text: '#9F9F9F',
+    placeholder: '#9F9F9F',
+    color: '#9F9F9F',
+    background: '#9F9F9F',
   },
 };
 class SignUpScreen extends React.Component {
@@ -26,21 +29,36 @@ class SignUpScreen extends React.Component {
           <DefaultInput label="CPF" />
           <DefaultInput label="Data de Nascimento" />
           <RadioButton.Group
-            theme={theme}
-            onValueChange={(newValue) => this.setState({value: newValue})}
-            value={this.state.value}>
-            <View>
-              <RadioButton value="feminino" />
+            value={this.state.value}
+            onValueChange={(value) => this.setState({value})}>
+            <Text style={{flex: 3, color: '#9F9F9F'}}>Sexo:</Text>
+
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <RadioButton value="feminino" theme={theme} />
+              <Text style={{flex: 3, color: '#7DB572'}}>Feminino</Text>
             </View>
-            <View>
-              <RadioButton value="masculino" />
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <RadioButton value="masculino" theme={theme} />
+              <Text style={{flex: 3, color: '#7DB572'}}>Masculino</Text>
             </View>
           </RadioButton.Group>
           <DefaultInput label="E-mail" />
           <DefaultInput label="Senha" secureTextEntry={true} />
           <DefaultInput label="Confirmar Senha" />
-          <DefaultInput label="Endereço" />
-          <DefaultButton text="Salvar" />
+
+          <AdressInput
+            label="Endereço"
+            goToAdress={() => {
+              this.props.navigation.navigate('MapaSelector');
+            }}
+          />
+
+          <DefaultButton
+            text="Salvar"
+            doAction={() => {
+              this.props.navigation.navigate('Screens');
+            }}
+          />
         </View>
       </ScrollView>
     );

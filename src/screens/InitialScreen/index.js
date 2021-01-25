@@ -20,6 +20,12 @@ class InitialScreen extends React.Component {
             this.props.navigation.navigate('Cadastro');
           }}
         />
+        <Button
+          text={'Trs'}
+          doAction={() => {
+            this.props.navigation.navigate('MapaSelector');
+          }}
+        />
       </View>
     );
   }

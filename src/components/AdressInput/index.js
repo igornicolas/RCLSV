@@ -1,6 +1,7 @@
 import React from 'react';
 import TextInput from 'react-native-paper/lib/commonjs/components/TextInput/TextInput';
 import {StyleSheet, View} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const styles = StyleSheet.create({
   inputStyle: {
@@ -25,13 +26,17 @@ const theme = {
     placeholder: '#6E6E6E',
   },
 };
-export default function DefaultInput(props) {
+export default function AdressInput(props) {
   return (
-    <View>
+    <View style={styles.inputStyle}>
       <TextInput
         {...props}
         mode="outlined"
         label={props.label}
+        onFocus={() => {
+          props.goToAdress();
+        }}
+        showSoftInputOnFocus={false}
         onChangeText={(text) => console.log(text)}
         selectionColor="#7DB572"
         style={styles.inputStyle}

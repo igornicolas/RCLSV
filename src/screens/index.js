@@ -5,22 +5,26 @@ import {createStackNavigator} from '@react-navigation/stack';
 import MapScreen from './MapScreen';
 import ConfigurationScreen from './ConfigurationScreen';
 import ComplaintScreen from './ComplaintScreen';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-const Tab = createBottomTabNavigator();
+const Tab = createMaterialBottomTabNavigator();
 class Screens extends React.Component {
   render() {
     return (
-      <Tab.Navigator>
+      <Tab.Navigator
+        barStyle={{backgroundColor: '#000'}}
+        activeColor="#548744"
+        inactiveColor="#949494">
         <Tab.Screen
           name="Mapa"
           component={MapScreen}
           options={{
             tabBarLabel: 'Mapa',
             tabBarIcon: ({color, size}) => (
-              <MaterialCommunityIcons name="map" color={color} size={size} />
+              <MaterialCommunityIcons name="map" color={color} size={25} />
             ),
           }}
         />
@@ -30,7 +34,7 @@ class Screens extends React.Component {
           options={{
             tabBarLabel: 'Perfil',
             tabBarIcon: ({color, size}) => (
-              <AntDesign name="user" color={color} size={size} />
+              <AntDesign name="user" color={color} size={25} />
             ),
           }}
         />
@@ -40,7 +44,7 @@ class Screens extends React.Component {
           options={{
             tabBarLabel: 'Denúncia',
             tabBarIcon: ({color, size}) => (
-              <MaterialIcons name="campaign" color={color} size={size} />
+              <MaterialIcons name="campaign" color={color} size={25} />
             ),
           }}
         />

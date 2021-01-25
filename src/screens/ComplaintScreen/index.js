@@ -1,11 +1,16 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
+import DefaultInput from '../../components/DefaultInput';
+import DefaultButton from '../../components/DefaultButton';
 
 class ComplaintScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>Config your shit.</Text>
+        <DefaultInput label="Categoria" />
+        <DefaultInput label="Email" multiline={true} numberOfLines={10} />
+        <DefaultInput label="Endereço" />
+        <DefaultButton text={'Enviar'} />
       </View>
     );
   }
@@ -13,9 +18,7 @@ class ComplaintScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#000',
   },
 });
 // ...

@@ -6,6 +6,7 @@ import SignInScreen from './screens/SignInScreen';
 import SignUpScreen from './screens/SignUpScreen';
 import InitialScreen from './screens/InitialScreen';
 import Screens from './screens';
+import MapSelector from './components/MapSelector';
 
 const Stack = createStackNavigator();
 
@@ -25,7 +26,27 @@ class Routes extends React.Component {
               component={SignInScreen}
               options={{headerShown: false}}
             />
-            <Stack.Screen name="Cadastro" component={SignUpScreen} />
+            <Stack.Screen
+              name="Cadastro"
+              component={SignUpScreen}
+              options={{
+                headerStyle: {
+                  backgroundColor: '#000',
+                },
+                headerTintColor: '#7DB572',
+              }}
+            />
+            <Stack.Screen
+              name="MapaSelector"
+              component={MapSelector}
+              options={{
+                title: 'Endereço',
+                headerStyle: {
+                  backgroundColor: '#000',
+                },
+                headerTintColor: '#7DB572',
+              }}
+            />
             <Stack.Screen
               name="Screens"
               component={Screens}
