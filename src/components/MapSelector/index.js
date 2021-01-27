@@ -22,7 +22,7 @@ export default class MapSelector extends Component {
     super(props);
     this.state = {
       loading: true,
-      adress: '',
+      address: '',
       region: {
         latitude: 10,
         longitude: 10,
@@ -78,7 +78,7 @@ export default class MapSelector extends Component {
           'AIzaSyC9IaM_sE7wm7c0krWUy2kA3187QmftQDE',
       )
       .then((response) =>
-        this.setState({adress: response.data.results[0].formatted_address}),
+        this.setState({address: response.data.results[0].formatted_address}),
       );
   };
 
@@ -95,8 +95,13 @@ export default class MapSelector extends Component {
 
   // Action to be taken after select location button click
   onLocationSelect = () => {
-    this.props.navigation.navigate('Cadastro');
-    //alert(this.state.adress);
+    console.log(this.state.region.latitude);
+    console.log(this.state.region.longitude);
+    this.props.navigation.navigate('Cadastro', {
+      address: this.state.address,
+      location: this.state.region,
+    });
+    //alert(this.state.address);
   };
 
   render() {
@@ -150,7 +155,7 @@ export default class MapSelector extends Component {
                 borderBottomWidth: 0.5,
                 color: '#fff',
               }}>
-              {this.state.adress}
+              {this.state.address}
             </Text>
             <DefaultButton
               text="Salvar"

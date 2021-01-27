@@ -32,7 +32,6 @@ export default function DefaultInput(props) {
         {...props}
         mode="outlined"
         label={props.label}
-        onChangeText={(text) => console.log(text)}
         selectionColor="#7DB572"
         style={styles.inputStyle}
         theme={theme}

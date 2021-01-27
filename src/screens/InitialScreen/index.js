@@ -23,7 +23,7 @@ class InitialScreen extends React.Component {
         <Button
           text={'Trs'}
           doAction={() => {
-            this.props.navigation.navigate('MapaSelector');
+            this.props.navigation.navigate('Screens');
           }}
         />
       </View>

@@ -1,20 +1,11 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {
-  StyleSheet,
-  View,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  Alert,
-  Button,
-  TextInput,
-  Text,
-} from 'react-native';
+import {StyleSheet, View, Text, Alert} from 'react-native';
 import DefaultInput from '../../components/DefaultInput';
 import DefaultButton from '../../components/DefaultButton';
 import LogoComponent from '../../components/LogoComponent';
-//import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-community/async-storage';
+import api from '../../services/api';
 //import SplashScreen from 'react-native-splash-screen';
 
 const styles = StyleSheet.create({
@@ -28,7 +19,7 @@ const styles = StyleSheet.create({
   },
 });
 export default class SignInScreen extends Component {
-  state = {token: null, loginText: '', senhaText: ''};
+  state = {token: null, emailText: '', passwordText: ''};
 
   componentDidMount() {
     this.loadData();
@@ -66,17 +57,19 @@ export default class SignInScreen extends Component {
   };
 
   Login = async () => {
-    /**
+    console.log(this.state.passwordText);
+    console.log(this.state.emailText);
+    let logado = true;
     const response = await api
-      .post('/login', {
-        email: this.state.loginText,
-        password: this.state.senhaText,
+      .post('http://192.168.15.2:3333/login', {
+        email: this.state.emailText,
+        password: this.state.passwordText,
       })
       .catch(function (error) {
+        logado = false;
         Alert.alert(
           'Erro',
           'Erro de login número ' +
-            error.response.status +
             ' confira o login e senha e tente novamente',
           [
             {
@@ -88,62 +81,70 @@ export default class SignInScreen extends Component {
         );
         return;
       });
-    const {token, auth, id, permission} = await response.data;
-    try {
-      await AsyncStorage.removeItem('token');
-      await AsyncStorage.removeItem('auth');
-      await AsyncStorage.removeItem('id');
-      await AsyncStorage.removeItem('permission');
-      await AsyncStorage.setItem('token', token);
-      await AsyncStorage.setItem('permission', permission.toString());
-      await AsyncStorage.setItem('auth', auth.toString());
-      await AsyncStorage.setItem('id', id.toString());
+    if (logado) {
+      console.log('ainda passa');
+      console.log(response.data);
+      const {token, id} = await response.data;
+      try {
+        await AsyncStorage.removeItem('token');
+        await AsyncStorage.removeItem('id');
+        await AsyncStorage.setItem('token', token);
+        await AsyncStorage.setItem('id', id.toString());
 
-      api.defaults.headers.common.Authorization = `Bearer ${token}`;
-    } catch (err) {
-      console.log(err);
+        //api.defaults.headers.common.Authorization = `Bearer ${token}`;
+      } catch (err) {
+        console.log(err);
+      }
+      console.log(id);
+
+      const response2 = await api.get(`http://192.168.15.2:3333/user/${id}`);
+      console.log(response2.data);
+      const {citizen, truck} = response2.data;
+      await AsyncStorage.removeItem('isWhat');
+      if (truck == null) {
+        /**
+            await AsyncStorage.removeItem('name');
+            await AsyncStorage.removeItem('plate');
+
+            await AsyncStorage.setItem('name', citizen.name); */
+        await AsyncStorage.setItem('isWhat', 'citizen');
+        console.log(citizen);
+      }
+      if (citizen == null) {
+        //await AsyncStorage.setItem('plate', truck.plate);
+        await AsyncStorage.setItem('isWhat', 'truck');
+      }
+      this.props.navigation.navigate('Screens');
     }
-
-    api.defaults.headers.common.Authorization = `Bearer ${token}`;
-
-    const response2 = await api.get(`/user/${id}`);
-    console.log(response2.data);
-    const {Technician, name} = response2.data;
-    const booleanTechnician = Technician !== null;
-
-    try {
-      await AsyncStorage.removeItem('technician');
-      await AsyncStorage.removeItem('name');
-
-      await AsyncStorage.setItem('technician', booleanTechnician.toString());
-
-      await AsyncStorage.setItem('name', name);
-      console.log('tec');
-      console.log(booleanTechnician);
-    } catch (err) {
-      console.log(err);
-    }
-
-    this.props.navigation.navigate(
-      'pages',
-      {params: {vida: 'merda', name: name, id: id}},
-      {params: {vida: 'merda', name: name, id: id}},
-    );
-    this.props.navigation.setParams(
-      'pages',
-      {params: {vida: 'merda', name: name, id: id}},
-      {params: {vida: 'merda', name: name, id: id}},
-    ); */
   };
 
   render() {
     return (
       <View style={styles.container}>
         <LogoComponent />
-        <DefaultInput label="Email" />
-        <DefaultInput label="Senha" />
+        <DefaultInput
+          autoCompleteType="email"
+          keyboardType="email-address"
+          label="Email"
+          autoCapitalize="none"
+          onChangeText={(text) => this.setState({emailText: text})}
+        />
+        <DefaultInput
+          secureTextEntry={true}
+          autoCompleteType="password"
+          textContentType="password"
+          label="Senha"
+          onChangeText={(text) => {
+            this.setState({passwordText: text});
+          }}
+        />
         <Text style={styles.forget}>Esqueci a senha</Text>
-        <DefaultButton text="Entrar" />
+        <DefaultButton
+          text="Entrar"
+          onPress={() => {
+            this.Login();
+          }}
+        />
       </View>
     );
   }
