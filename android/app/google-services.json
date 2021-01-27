@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "824523716636",
+    "project_id": "rclsvapp",
+    "storage_bucket": "rclsvapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:824523716636:android:5173d9635fc2f5ff0547d9",
+        "android_client_info": {
+          "package_name": "com.rclsvapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "824523716636-necvphc2bvcmjhrk88kuafif4ms06n8k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDoD3-gyxDq7TQ9k1DEHPvJxraEETPf4M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "824523716636-necvphc2bvcmjhrk88kuafif4ms06n8k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -5,6 +5,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import SignInScreen from './screens/SignInScreen';
 import SignUpScreen from './screens/SignUpScreen';
 import InitialScreen from './screens/InitialScreen';
+import UpdateUser from './screens/UpdateUser';
 import Screens from './screens';
 import MapSelector from './components/MapSelector';
 
@@ -29,6 +30,16 @@ class Routes extends React.Component {
             <Stack.Screen
               name="Cadastro"
               component={SignUpScreen}
+              options={{
+                headerStyle: {
+                  backgroundColor: '#000',
+                },
+                headerTintColor: '#7DB572',
+              }}
+            />
+            <Stack.Screen
+              name="Atualizar"
+              component={UpdateUser}
               options={{
                 headerStyle: {
                   backgroundColor: '#000',

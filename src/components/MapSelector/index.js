@@ -68,6 +68,14 @@ export default class MapSelector extends Component {
 
   // Fetch location details as a JOSN from google map API
   fetchAddress = () => {
+    console.log(
+      'https://maps.googleapis.com/maps/api/geocode/json?latlng=' +
+        this.state.region.latitude +
+        ',' +
+        this.state.region.longitude +
+        '&key=' +
+        'AIzaSyC9IaM_sE7wm7c0krWUy2kA3187QmftQDE',
+    );
     const a = api
       .get(
         'https://maps.googleapis.com/maps/api/geocode/json?latlng=' +
@@ -97,7 +105,8 @@ export default class MapSelector extends Component {
   onLocationSelect = () => {
     console.log(this.state.region.latitude);
     console.log(this.state.region.longitude);
-    this.props.navigation.navigate('Cadastro', {
+    console.log(this.props.route.params.routeName);
+    this.props.navigation.navigate(this.props.route.params?.routeName, {
       address: this.state.address,
       location: this.state.region,
     });

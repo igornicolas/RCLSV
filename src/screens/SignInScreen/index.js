@@ -19,32 +19,30 @@ const styles = StyleSheet.create({
   },
 });
 export default class SignInScreen extends Component {
-  state = {token: null, emailText: '', passwordText: ''};
+  state = {token: null, emailText: '', passwordText: '', fcmToken: ''};
 
   componentDidMount() {
     this.loadData();
   }
 
   loadData = async () => {
-    /**  const id = await AsyncStorage.getItem('id');
+    const fcmToken = await AsyncStorage.getItem('fcmToken');
+    this.setState({fcmToken});
+    const id = await AsyncStorage.getItem('id');
     const token = await AsyncStorage.getItem('token');
     const name = await AsyncStorage.getItem('name');
-    api.defaults.headers.common.Authorization = `Bearer ${token}`;
+    // api.defaults.headers.common.Authorization = `Bearer ${token}`;
     let booleanRedirect = true;
-    console.log('me oi');
     const verificacaoToken = await api
       .get(`/user/${id}`)
       .catch(function (error) {
         AsyncStorage.removeItem('token');
-        AsyncStorage.removeItem('auth');
         AsyncStorage.removeItem('id');
-        AsyncStorage.removeItem('permission');
         console.log(error);
         console.log('excluido');
         booleanRedirect = false;
         return;
       });
-    console.log('eu me odeio');
     console.log(verificacaoToken);
     console.log(id);
     console.log(token);
@@ -52,7 +50,7 @@ export default class SignInScreen extends Component {
     if (booleanRedirect === true) {
       this.props.navigation.navigate('pages', {id: id, name: name});
     }
-
+    /**
     SplashScreen.hide(); */
   };
 
@@ -64,6 +62,7 @@ export default class SignInScreen extends Component {
       .post('http://192.168.15.2:3333/login', {
         email: this.state.emailText,
         password: this.state.passwordText,
+        fcmToken: this.state.fcmToken,
       })
       .catch(function (error) {
         logado = false;
@@ -138,7 +137,6 @@ export default class SignInScreen extends Component {
             this.setState({passwordText: text});
           }}
         />
-        <Text style={styles.forget}>Esqueci a senha</Text>
         <DefaultButton
           text="Entrar"
           onPress={() => {

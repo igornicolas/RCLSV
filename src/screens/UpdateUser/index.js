@@ -5,10 +5,10 @@ import DefaultButton from '../../components/DefaultButton';
 import RadioButton from 'react-native-paper/lib/commonjs/components/RadioButton/RadioButton';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import AdressInput from '../../components/AdressInput';
-import AsyncStorage from '@react-native-community/async-storage';
-import api from '../../services/api';
 import {TextInputMask} from 'react-native-masked-text';
-import TextInput from 'react-native-paper/lib/commonjs/components/TextInput/TextInput';
+import FormatDate from '../../components/FormatDate';
+
+import api from '../../services/api';
 const theme = {
   colors: {
     primary: '#7DB572',
@@ -19,17 +19,14 @@ const theme = {
     background: '#9F9F9F',
   },
 };
-class SignUpScreen extends React.Component {
+class UpdateUser extends React.Component {
   state = {
     value: 'feminino',
     texto: '',
-    fcmToken: '',
     name: '',
     surname: '',
     cpf: '',
-    cpfRaw: '',
     birth_date: '',
-    birth_dateRaw: '',
     sex: true,
     email: '',
     password: '',
@@ -44,15 +41,20 @@ class SignUpScreen extends React.Component {
     console.log('montei cadastro');
   }
 
-  loadData = async () => {
-    try {
-      const fcmToken = await AsyncStorage.getItem('fcmToken');
-
-      console.log(fcmToken);
-      this.setState({fcmToken});
-      //api.defaults.headers.common.Authorization = `Bearer ${token}`;
-    } catch (err) {
-      console.log(err);
+  loadData = () => {
+    if (this.props.route.params.user) {
+      console.log(this.props.route.params.user.location);
+      this.setState({
+        ...this.state,
+        sex: this.props.route.params.user.citizen.sex,
+        name: this.props.route.params.user.citizen.name,
+        surname: this.props.route.params.user.citizen.surname,
+        cpf: this.props.route.params.user.citizen.cpf,
+        birth_date: this.props.route.params.user.citizen.birth_date,
+        email: this.props.route.params.user.email,
+        location: this.props.route.params.user.location,
+        address: this.props.route.params.user.address,
+      });
     }
   };
   componentDidUpdate() {
@@ -69,91 +71,39 @@ class SignUpScreen extends React.Component {
     }
     console.log(this.state.location);
   }
-  signUp = async () => {
-    let validation = true;
-    const isValidDate = this.datetimeField.isValid();
-    const isValidCpf = true;
-    if (!isValidDate) {
-      validation = false;
-      Alert.alert(
-        'Erro',
-        'A data inserida não é válida!',
-        [
-          {
-            text: 'Ok',
-            onPress: () => {},
-          },
-        ],
-        {cancelable: false},
-      );
-    }
-    if (!isValidCpf) {
-      validation = false;
-      Alert.alert(
-        'Erro',
-        'O CPF inserido não é válido!',
-        [
-          {
-            text: 'Ok',
-            onPress: () => {},
-          },
-        ],
-        {cancelable: false},
-      );
-    }
-    console.log(isValidDate);
-    console.log(isValidCpf);
-    const unmaskedCpf = this.cpfField.getRawValue();
-    const unmaskedDate = this.datetimeField.getRawValue();
-    const date = new Date(unmaskedDate);
-    console.log(date);
+  update = async () => {
+    let success = true;
+    await api
+      .put('http://192.168.15.2:3333/user/25', {
+        name: this.state.name,
+        surname: this.state.surname,
+        email: this.state.email,
+        sex: this.state.sex,
+        cpf: this.state.cpf,
+        latitude: this.state.location.latitude,
+        longitude: this.state.location.longitude,
+        birth_date: this.state.birth_date,
+      })
 
-    let booleanRedirect = true;
-    if (validation) {
-      const response = await api
-        .post('http://192.168.15.2:3333/user', {
-          name: this.state.name,
-          isWhat: 'citizen',
-          surname: this.state.surname,
-          email: this.state.email,
-          password: this.state.password,
-          sex: this.state.sex,
-          cpf: unmaskedCpf,
-          latitude: this.state.location.latitude,
-          notification: true,
-          longitude: this.state.location.longitude,
-          birth_date: date,
-          token: this.state.fcmToken,
-        })
-        .catch(function (error) {
-          console.log(error);
-          booleanRedirect = false;
-          Alert.alert(
-            'Erro',
-            'Erro de cadastro número ' + ' confira os dados e tente novamente',
-            [
-              {
-                text: 'Ok',
-                onPress: () => {},
-              },
-            ],
-            {cancelable: false},
-          );
-          return;
-        });
-      if (booleanRedirect) {
-        console.log(response.data.id);
-        const id = await AsyncStorage.setItem(
-          'id',
-          response.data.id.toString(),
+      .catch(function (error) {
+        success = false;
+        console.log(error);
+        Alert.alert(
+          'Erro',
+          'Erro de atualizacao número ' + ' confira os dados e tente novamente',
+          [
+            {
+              text: 'Ok',
+              onPress: () => {},
+            },
+          ],
+          {cancelable: false},
         );
-
-        const isWhat = await AsyncStorage.setItem('isWhat', 'citizen');
-
-        console.log(id);
-        console.log(isWhat);
-        this.props.navigation.navigate('Screens');
-      }
+        return;
+      });
+    console.log(success);
+    if (success) {
+      this.props.navigation.navigate('Configuração', {update: true});
     }
   };
   render() {
@@ -191,28 +141,9 @@ class SignUpScreen extends React.Component {
           />
           <DefaultInput
             label="Data de Nascimento"
-            value={this.state.birth_date}
+            value={FormatDate(this.state.birth_date)}
             onChangeText={(text) => this.setState({birth_date: text})}
-            render={(props) => (
-              <TextInputMask
-                {...props}
-                type={'datetime'}
-                options={{
-                  format: 'DD/MM/YYYY',
-                }}
-                style={{color: '#fff'}}
-                value={this.state.birth_date}
-                onChangeText={(text) => {
-                  this.setState({
-                    birth_date: text,
-                  });
-                }}
-                // add the ref to a local var
-                ref={(ref) => (this.datetimeField = ref)}
-              />
-            )}
           />
-
           <RadioButton.Group
             value={this.state.sex}
             onValueChange={(value) => this.setState({sex: value})}>
@@ -232,25 +163,13 @@ class SignUpScreen extends React.Component {
             value={this.state.email}
             onChangeText={(text) => this.setState({email: text})}
           />
-          <DefaultInput
-            label="Senha"
-            value={this.state.password}
-            secureTextEntry={true}
-            onChangeText={(text) => this.setState({password: text})}
-          />
-          <DefaultInput
-            label="Confirmar Senha"
-            secureTextEntry={true}
-            value={this.state.confirmationPassword}
-            onChangeText={(text) => this.setState({confirmationPassword: text})}
-          />
 
           <AdressInput
             label="Endereço"
             value={this.props.route.params?.address}
             goToAdress={() => {
               this.props.navigation.navigate('MapaSelector', {
-                routeName: 'Cadastro',
+                routeName: 'Atualizar',
               });
             }}
           />
@@ -258,7 +177,7 @@ class SignUpScreen extends React.Component {
           <DefaultButton
             text="Salvar"
             onPress={() => {
-              this.signUp();
+              this.update();
             }}
           />
         </View>
@@ -277,4 +196,4 @@ const styles = StyleSheet.create({
 });
 // ...
 
-export default SignUpScreen;
+export default UpdateUser;
